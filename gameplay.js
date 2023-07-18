@@ -1,4 +1,5 @@
 const playOptions = ["Rock", "Scissors", "Paper"];  // order matters!
+let playerScore = 0, computerScore = 0;
 
 function getRandomInt(max) {
     //  get a random number between 0 (incl) and max (incl).
@@ -11,63 +12,62 @@ function getComputerChoice(){
     return playOptions[getRandomInt(2)]
 }
 
-function capitalise (s){
-    // capitalises a string
-    return s.charAt(0).toUpperCase() + s.slice(1)
-}
+// function capitalise (s){
+//     // capitalises a string
+//     return s.charAt(0).toUpperCase() + s.slice(1)
+// }
 
-function cleanInput(s){
-    // reformat player input to match one of the play options
-    return capitalise(s.toLowerCase())
-}
+// function cleanInput(s){
+//     // reformat player input to match one of the play options
+//     return capitalise(s.toLowerCase())
+// }
 
-function playOneRound(computerChoice, playerChoice){
-    playerChoice = cleanInput(playerChoice)
-    console.log(playerChoice)
+function playOneRound(playerChoiceEvent){
+    let computerChoice = getComputerChoice();
+    playerChoice = playerChoiceEvent.target.id;
     let playerIndex = playOptions.indexOf(playerChoice)
     let computerIndex = playOptions.indexOf(computerChoice)
 
+    // display outcome and update scores
     //  draw
     if (playerIndex === computerIndex){
-        return `You Draw! You both chose ${playerChoice}`
+        roundOutcome.textContent =`You Draw! You both chose ${playerChoice}`;
+        
     }
     // win
-    if ((playerIndex + 1) % playOptions.length == computerIndex){
-        return `You Win! ${playerChoice} beats ${computerChoice}`
+    else if ((playerIndex + 1) % playOptions.length == computerIndex){
+        playerScore ++;
+        roundOutcome.textContent = `You Win! ${playerChoice} beats ${computerChoice}`;
     }
 
     // lose
-    return `You Lose! ${playerChoice} loses to ${computerChoice} `
-}
-
-function game(){
-    // play a 5 round game
-    let playerScore = 0, computerScore = 0;
-    for (let round = 1; round <= 5; round++){
-        let computerChoice = getComputerChoice();
-        let playerChoice = "";
-        while (playOptions.indexOf(playerChoice) === -1){
-            playerChoice = cleanInput(prompt("Choose from Rock, Paper, Scissors"));
-        }
-        let roundOutcome = playOneRound(computerChoice, playerChoice);
-        console.log(roundOutcome);
-        if (roundOutcome.includes("You Win")) {
-            playerScore += 1;
-        }
-        else if (roundOutcome.includes("You Lose")) {
-            computerScore += 1;
-        }
-    }
-
-    let scoreText = ` (${playerScore} vs ${computerScore})`
-
-    if (computerScore === playerScore ){
-        return "You Draw Overall!" + scoreText
-    }
-    else if (computerScore < playerScore){
-        return "You Win Overall!" + scoreText
-    }
     else {
-        return "You Lose Overall!" + scoreText
+        computerScore++;
+        roundOutcome.textContent =`You Lose! ${playerChoice} loses to ${computerChoice}`;
     }
+
+    // update rolling score
+    rollingScore.textContent = `You ${playerScore} - ${computerScore} Computer`;
+
+    if (playerScore === 5){
+        alert("You've won!\nClick to play again")
+        resetGame()
+    }
+    else if (computerScore === 5){
+        alert("You've lost!\nClick to play again")
+        resetGame()
+    }
+
 }
+
+function resetGame(){
+    playerScore = 0;
+    computerScore = 0;
+    roundOutcome.textContent =``;
+    rollingScore.textContent = `You: 0 - 0 Computer`;
+
+}
+
+
+const buttons = document.querySelectorAll("button");
+buttons.forEach(button => addEventListener("click", playOneRound))
