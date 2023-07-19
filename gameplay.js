@@ -50,10 +50,12 @@ function playOneRound(playerChoiceEvent){
     rollingScore.textContent = `You ${playerScore} - ${computerScore} Computer`;
 
     if (playerScore === 5){
+        requestAnimationFrame(() => {}, 20)
         alert("You've won!\nClick to play again")
         resetGame()
     }
     else if (computerScore === 5){
+        requestAnimationFrame(() => {}, 20)
         alert("You've lost!\nClick to play again")
         resetGame()
     }
